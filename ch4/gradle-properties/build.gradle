@@ -1,0 +1,5 @@
+
+task printGradleProperty <<  {
+
+    println "prperty :$myprop"
+}

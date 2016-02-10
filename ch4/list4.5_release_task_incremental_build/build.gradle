@@ -1,0 +1,67 @@
+ext.versionFile = file('version.properties')
+
+task loadVersion(description: 'load Property file'){
+    project.version=readversion()
+}
+
+ProjectVersion readversion(){
+
+    logger.quiet 'Reading the version File'
+
+    if (!versionFile.exists()){
+        throw new GradleException("Required version File not exist  $versionFile.cannonicalPath")
+    }
+
+    Properties properties = new Properties()
+
+    versionFile.withInputStream{ stream ->
+        properties.load(stream)
+    }
+
+    new ProjectVersion(properties.major.toInteger(),properties.minor.toInteger(),properties.release.toBoolean())
+}
+
+
+
+class ProjectVersion{
+
+    Integer major
+    Integer minor
+    Boolean release
+
+    ProjectVersion(Integer major, Integer minor) {
+        this.major = major
+        this.minor = minor
+        this.release = false
+    }
+
+    ProjectVersion(Integer major, Integer minor, Boolean release) {
+        this(major,minor)
+        this.release = release
+    }
+
+    @Override
+    String toString(){
+        "$major.$minor${release?'' : '-SNAPSHOT'}"
+    }
+}
+
+
+task printVersion << {
+    logger.quiet "Version: $version"
+}
+
+task makeReleaseVersion(group: 'versioning', description: 'Makes project a release version'){
+
+
+    inputs.property('release',version.release)
+    outputs.file versionFile
+
+    doLast {
+        version.release = true
+        ant.propertyfile(file: versionFile) {
+            entry(key: 'release', type: 'string', operation: '=', value: 'true')
+        }
+    }
+
+}
