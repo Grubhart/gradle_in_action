@@ -1,5 +1,9 @@
-apply plugin: 'war'
 
+import com.manning.gia.ProjectVersion
+import com.manning.gia.ReleaseVersionTask
+
+apply plugin: 'war'
+apply plugin: 'announce'
 ext.versionFile = file('version.properties')
 
 task loadVersion(description: 'load Property file'){
@@ -27,54 +31,6 @@ ProjectVersion readversion(){
 
 
 
-class ReleaseVersionTask extends DefaultTask {
-
-    @Input Boolean Release
-    @OutputFile File destFile
-
-    ReleaseVersionTask() {
-
-        group='versioning'
-        description='Makes Project a Release version'
-
-
-    }
-
-    @TaskAction
-    void start(){
-
-        project.version.release = true
-        ant.propertyfile(file: destFile) {
-            entry(key: 'release', type: 'string', operation: '=', value: 'true')
-        }
-
-    }
-}
-
-
-class ProjectVersion{
-
-    Integer major
-    Integer minor
-    Boolean release
-
-    ProjectVersion(Integer major, Integer minor) {
-        this.major = major
-        this.minor = minor
-        this.release = false
-    }
-
-    ProjectVersion(Integer major, Integer minor, Boolean release) {
-        this(major,minor)
-        this.release = release
-    }
-
-    @Override
-    String toString(){
-        "$major.$minor${release?'' : '-SNAPSHOT'}"
-    }
-}
-
 task printVersion << {
     logger.quiet "Version: $version"
 }
@@ -82,7 +38,14 @@ task printVersion << {
 task makeReleaseVersion(type: ReleaseVersionTask){
     release=version.release
     destFile=versionFile
+
+    doLast{
+        announce.announce("hola",'local')
+    }
+
 }
+
+
 
 task createDistributionTask(type: Zip, dependsOn: makeReleaseVersion){
     from war.outputs.files
@@ -116,7 +79,7 @@ tasks.addRule("Pattern: increment<Classifier>Version - Increments the project ve
 
                 switch (classifier){
                     case 'major': ++version.major
-                        break
+                                    break
 
                     case 'minor': ++version.minor
                         break
