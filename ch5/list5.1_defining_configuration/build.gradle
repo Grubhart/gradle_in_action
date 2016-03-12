@@ -1,0 +1,7 @@
+configurations {
+    cargo{
+        description = "classpath for cargo ant tasks"
+        visible= false
+
+    }
+}
