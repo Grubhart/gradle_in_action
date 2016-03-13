@@ -33,6 +33,6 @@ task copyDependenciesToLocalDir(type:Copy){
 }
 
 dependencies{
-    cargo fileTree(dir: "${System.properties['user.home']}/libs/cargo", include: '*.jar')
+    cargo fileTree(dir: "${System.properties['user.home']}/libs/cargo", include:'*.jar')
 }
 
