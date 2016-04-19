@@ -1,0 +1,60 @@
+ext.projectIds = ['group': 'com.manning.gia', 'version': '0.1']
+
+group = projectIds.group
+version = projectIds.version
+
+task hello <<{
+    println 'Hello World from Root Project'
+}
+
+project(':model'){
+
+    group = projectIds.group
+    version = projectIds.version
+    apply plugin: 'java'
+
+    task hello <<{
+        println 'Hello World from model Project'
+    }
+}
+
+project(':repository'){
+
+    group = projectIds.group
+    version = projectIds.version
+    apply plugin: 'java'
+
+    ext.projectIds = ['group': 'com.manning.gia', 'version': '0.1']
+
+    group = projectIds.group
+    version = projectIds.version
+
+    task hello <<{
+        println 'Hello World from Repository Project'
+    }
+
+
+}
+
+project(':web'){
+    group = projectIds.group
+    version = projectIds.version
+    apply plugin: 'java'
+    apply plugin: 'war'
+    apply plugin: 'jetty'
+
+    repositories{
+        mavenCentral()
+    }
+
+    task hello <<{
+        println 'Hello World from web Project'
+    }
+
+    dependencies{
+        compile project (':repository')
+        providedCompile 'javax.servlet:servlet-api:2.5'
+        runtime 'javax.servlet:jstl:1.1.2'
+    }
+
+}
