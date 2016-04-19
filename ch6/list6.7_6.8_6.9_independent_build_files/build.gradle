@@ -1,0 +1,12 @@
+ext.projectIds = ['group': 'com.manning.gia', 'version': '0.1']
+
+allprojects{
+    group = projectIds.group
+    version = projectIds.version
+}
+
+subprojects{
+    apply plugin: 'java'
+}
+
+
