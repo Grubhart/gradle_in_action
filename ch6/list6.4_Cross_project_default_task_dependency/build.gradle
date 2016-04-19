@@ -24,11 +24,9 @@ project(':repository'){
     version = projectIds.version
     apply plugin: 'java'
 
-    ext.projectIds = ['group': 'com.manning.gia', 'version': '0.1']
-
-    group = projectIds.group
-    version = projectIds.version
-
+    dependencies{
+        compile project(':model')
+    }
     task hello <<{
         println 'Hello World from Repository Project'
     }
